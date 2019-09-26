@@ -2,9 +2,13 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const graphQlHttp = require('express-graphql');
 const { buildSchema } = require('graphql');
+
+const Event = require('./models/event');
+
+const mongoose = require('mongoose');
+
 const app = express();
 
-const events = [];
 
 app.use(bodyParser.json());
 app.use('/graphql', graphQlHttp({
@@ -39,23 +43,46 @@ app.use('/graphql', graphQlHttp({
     `),
     rootValue: {
         events: ()=>{
-            return events;
+            return Event.find()
+                    .then(events => {
+                        return events.map(event =>{
+                            return { ...event._doc };
+                        });
+                    })
+                        .catch(err => {
+                            throw err;
+                        });
         },
-        createEvent: (args) => {
-            const event = {
-                _id: Math.random().toString(),
+        createEvent: args => {
+            const event = new Event({
                 title: args.eventInput.title,
                 description: args.eventInput.description,
                 price: +args.eventInput.price,
-                date: args.eventInput.date,
-            };
-            events.push(event);
-            return event
+                date: new Date(args.eventInput.date),
+            });
+
+            event
+                .save()
+                    .then( res => {
+                        console.log(res);
+                        return res;
+                    })
+                        .catch( err => {
+                            console.log(err);
+                            throw err;
+                        });
         }
     },
     graphiql: true
 }))
 
-app.listen(3000, ()=>{
-    console.log('server start at http://localhost:3000')
-});
+mongoose.connect(`'mongodb://localhost:27017/eventbooking`, { useNewUrlParser: true, useUnifiedTopology: true }).then(
+    ()=> {
+        app.listen(3000, ()=> {
+            console.log('server start at http://localhost:3000 ')
+        });
+    }
+).catch(
+    err => console.log(err)
+)
+
