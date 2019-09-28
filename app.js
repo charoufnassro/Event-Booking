@@ -1,82 +1,28 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const graphQlHttp = require('express-graphql');
-const { buildSchema } = require('graphql');
 
-const Event = require('./models/event');
+const graphQLSchema = require('./graphql/schema/index');
+const graphQLResolvers = require('./graphql/resolvers/index');
 
 const mongoose = require('mongoose');
+
+
 
 const app = express();
 
 
 app.use(bodyParser.json());
 app.use('/graphql', graphQlHttp({
-    schema: buildSchema(`
-        type Event {
-            _id: ID!
-            title: String!
-            description: String!
-            price: Float!
-            date: String!
-        }
-
-        input EventInput {
-            title: String!
-            description: String!
-            price: Float!
-            date: String!
-        }
-
-        type RootQuery{
-            events:[Event!]!
-        }
-
-        type RootMutation{
-            createEvent(eventInput: EventInput): Event
-        }
-
-        schema {
-            query: RootQuery
-            mutation: RootMutation
-        }    
-    `),
-    rootValue: {
-        events: ()=>{
-            return Event.find()
-                    .then(events => {
-                        return events.map(event =>{
-                            return { ...event._doc };
-                        });
-                    })
-                        .catch(err => {
-                            throw err;
-                        });
-        },
-        createEvent: args => {
-            const event = new Event({
-                title: args.eventInput.title,
-                description: args.eventInput.description,
-                price: +args.eventInput.price,
-                date: new Date(args.eventInput.date),
-            });
-
-            event
-                .save()
-                    .then( res => {
-                        console.log(res);
-                        return res;
-                    })
-                        .catch( err => {
-                            console.log(err);
-                            throw err;
-                        });
-        }
-    },
+    schema: graphQLSchema,
+    rootValue: graphQLResolvers,
     graphiql: true
 }))
-
-mongoose.connect(`'mongodb://localhost:27017/eventbooking`, { useNewUrlParser: true, useUnifiedTopology: true }).then(
+// mongodb://localhost:27017/eventbooking
+console.log(process.env.MONGO_USER)
+console.log(process.env.MONGO_PASSWORD)
+console.log(process.env.MONGO_DB)
+mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:STBuIT6yLMM03C6v@usermanager-cg1jd.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`, { useNewUrlParser: true, useUnifiedTopology: true }).then(
     ()=> {
         app.listen(3000, ()=> {
             console.log('server start at http://localhost:3000 ')
