@@ -1,25 +1,28 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
+
+import Bookings from './pages/Bookings';
+import Events from './pages/Events';
+import NotFound from './pages/NotFound';
+import Auth from './pages/Auth';
+import Layout from './components/Lyout/MainLayout';
+
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+    <Layout>
+      <Switch>
+        <Redirect exact from="/" to="/events" />
+        <Route path="/events" component={Events} />
+        <Route path="/auth" component={Auth} />
+        <Route path="/bookings" component={Bookings} />
+        <Route path="/404" component={NotFound}/>
+        <Redirect to='/404' />
+      </Switch>
+    </Layout>
+    </BrowserRouter>
   );
 }
 

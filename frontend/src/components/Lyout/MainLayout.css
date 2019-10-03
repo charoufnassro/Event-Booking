@@ -1,0 +1,38 @@
+.logo{
+    padding: 1em .5em;
+    margin: 1em;
+    color: #fff;
+    background: rgba(68, 67, 67, 0.568);
+    text-align: center;
+    font-weight: 600;
+    font-size: 1em;
+    cursor: pointer;
+    -webkit-user-select: none;  /* Chrome all / Safari all */
+    -moz-user-select: none;     /* Firefox all */
+    -ms-user-select: none;      /* IE 10+ */
+    user-select: none;          /* Likely future */  
+}
+.header{
+    margin: 0 .5em;
+
+}
+
+.auth{
+    cursor: pointer;
+    font-weight: bold;
+    padding: 0;
+    margin: 0;
+    -webkit-user-select: none;  /* Chrome all / Safari all */
+    -moz-user-select: none;     /* Firefox all */
+    -ms-user-select: none;      /* IE 10+ */
+    user-select: none;          /* Likely future */      
+}
+
+.auth:hover{
+    color: #1890FF;
+    font-size: 1.05em;
+}
+
+.search{
+    font-weight: bold;
+}
