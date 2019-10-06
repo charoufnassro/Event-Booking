@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { List, Button, Skeleton } from 'antd';
+import AuthContext from '../../context/auth-context';
 
 const count = 3;
 
@@ -13,7 +14,7 @@ export default class ListEvents extends Component {
 
   componentDidMount() {
     this.getData(res => {
-        
+      
       this.setState({
         initLoading: false,
         data: res.data.events,
@@ -102,27 +103,34 @@ export default class ListEvents extends Component {
       ) : null;
 
     return (
-      <List
-        style={{minHeight: '350px'}}
-        loading={initLoading}
-        itemLayout="horizontal"
-        loadMore={loadMore}
-        dataSource={list}
-        renderItem={item => (
-            
-          <List.Item
-            actions={["edit","more"]}
-          >
-            <Skeleton title={false} loading={item.loading} active>
-              <List.Item.Meta
-                title={item.title}
-                description={item.description}
-              />
-              <div>{item.date}</div>
-            </Skeleton>
-          </List.Item>
-        )}
-      />
+      <AuthContext.Consumer>
+        { (context) => {
+          return <List
+          style={{minHeight: '350px'}}
+          loading={initLoading}
+          itemLayout="horizontal"
+          loadMore={loadMore}
+          dataSource={list}
+          renderItem={item => (
+              
+            <List.Item
+              actions={["edit","more"]}
+            >
+              <Skeleton title={false} loading={item.loading} active>
+                <List.Item.Meta
+                  title={item.title}
+                  description={(!context.userId)? "Connectez vous pour voir la description": ((item.creator._id === context.userId)? item.description : "n'est pas votre event")}
+                />
+                <div>{item.date}</div>
+              </Skeleton>
+            </List.Item>
+          )}
+        />
+          
+        }}
+          
+      </AuthContext.Consumer>
+      
     );
   }
 }

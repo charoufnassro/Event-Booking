@@ -6,7 +6,7 @@ import Auth from '../../pages/Auth';
 import AuthContext from '../../context/auth-context';
 // import ModalLogin from '../Login/Login';
 
-import { Layout, Menu, Icon, Badge, Row, Col, Input, Popover} from 'antd';
+import { Layout, Menu, Icon, Badge, Row, Col, Input, Popover, Button} from 'antd';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { Search } = Input;
@@ -73,11 +73,13 @@ export default class MainLayout extends Component {
                         <div className="auth" style={{width: 100, textAlign: 'right'}} >
                             {/* <NavLink to="/auth" style={{color: 'inherit', fontWeight: 'bold'}}>Login</NavLink> */}
                             {(!context.token)? <Popover placement="bottomRight"  content={login} trigger="click">
-                                Login
-                              <Icon type="login" style={{margin: '0 .5em', fontWeight: 'bold'}}/>
+                              <Button key="1" type="primary">
+                                          <Icon type="login" style={{margin: '0 .5em'}}/> Login
+                              </Button>
                             </Popover> : <div onClick={context.logout}>
-                                Logout
-                              <Icon type="logout" style={{margin: '0 .5em', fontWeight: 'bold'}}/>
+                              <Button key="1" type="primary">
+                                          <Icon type="logout" style={{margin: '0 .5em'}}/> Loout
+                              </Button>
                             </div>}
                             
                         </div>
